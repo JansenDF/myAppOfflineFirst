@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   Alert,
@@ -27,9 +27,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
-import {database} from './src/database';
-import {User} from './src/database/model/UserModel';
+import CadastroUser from './src/components/CadastroUser';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -49,47 +47,13 @@ function Section({children, title}: SectionProps): React.JSX.Element {
       >
         {title}
       </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}
-      >
-        {children}
-      </Text>
+      <View style={styles.sectionDescription}>{children}</View>
     </View>
   );
 }
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  const [name, setName] = useState('Jansen');
-  const [matricula, setMatricula] = useState('11541');
-  const [email, setEmail] = useState('jansen@gmail.com');
-  const [password, setPassword] = useState('jansen');
-  const [profile, setProfile] = useState('1');
-
-  async function handleCreateUser() {
-    await database.write(async () => {
-      await database
-        .get<User>('users')
-        .create(user => {
-          (user.name = name),
-            (user.matricula = matricula),
-            (user.email = email),
-            (user.password = password),
-            (user.profile_code = profile);
-        })
-        .then(() => {
-          Alert.alert('Sucesso!', 'Usuário criado com sucesso.');
-        })
-        .catch(e => {
-          Alert.alert('Erro!', `${e}`);
-        });
-    });
-  }
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -111,39 +75,9 @@ function App(): React.JSX.Element {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}
         >
-          <View>
-            <TextInput
-              style={{height: 40}}
-              value={name}
-              placeholder="Digite aqui o nome do usuário!"
-              onChangeText={value => setName(value)}
-            />
-            <TextInput
-              style={{height: 40}}
-              value={matricula}
-              placeholder="Digite aqui a matrícula do usuário!"
-              onChangeText={value => setMatricula(value)}
-            />
-            <TextInput
-              style={{height: 40}}
-              value={email}
-              placeholder="Digite aqui o email do usuário!"
-              onChangeText={value => setEmail(value)}
-            />
-            <TextInput
-              style={{height: 40}}
-              value={password}
-              placeholder="Digite aqui a senha do usuário!"
-              onChangeText={value => setPassword(value)}
-            />
-            <TextInput
-              style={{height: 40}}
-              value={profile}
-              placeholder="Digite aqui o profile do usuário!"
-              onChangeText={value => setProfile(value)}
-            />
-            <Button title="Salvar" onPress={handleCreateUser} />
-          </View>
+          <Section title="Cadastro de Usuário">
+            <CadastroUser />
+          </Section>
         </View>
       </ScrollView>
     </SafeAreaView>
