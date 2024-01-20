@@ -12,10 +12,11 @@ import {
   View,
 } from 'react-native';
 
-import {database} from '../database';
-import {User} from '../database/model/UserModel';
+import {database} from '../../database';
+import {User} from '../../database/model/UserModel';
+import mySync from '../../database/syncronize';
 
-export default function CadastroUser() {
+export default function CadastroUsuario() {
   const [name, setName] = useState('');
   const [matricula, setMatricula] = useState('');
   const [email, setEmail] = useState('');
@@ -28,7 +29,7 @@ export default function CadastroUser() {
     setLoadingButton(true);
     await database.write(async () => {
       await database
-        .get<User>('users')
+        .get<User>('user')
         .create(user => {
           (user.name = name),
             (user.matricula = matricula),
@@ -72,8 +73,12 @@ export default function CadastroUser() {
     ]);
   }
 
+  function handleSync() {
+    mySync();
+  }
+
   async function getUsers() {
-    const allUsers = await database.get('users').query().fetch();
+    const allUsers = await database.get('user').query().fetch();
     setUsers(allUsers);
   }
 
@@ -121,9 +126,8 @@ export default function CadastroUser() {
             onPress={handleCreateUser}
             disabled={loadingButton}
           />
+          <Button title="Sincronizar" onPress={handleSync} color="#F00" />
         </View>
-      </View>
-      <View>
         {users == null ? (
           <View>
             <Text>Nenhum usuario cadastrado.</Text>

@@ -4,7 +4,7 @@ import { text } from '@nozbe/watermelondb/decorators'
 
 
 export class User extends Model {
-  static table = 'users'
+  static table = 'user'
 
   @text('name') name!: string
   @text('matricula') matricula!: string
